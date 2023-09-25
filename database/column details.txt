@@ -1,0 +1,98 @@
+Bảng cart_items:
+
+id: Khóa chính, duy nhất, tự động tăng.
+user_id: Khóa ngoại liên kết đến bảng users thông qua cột user_id.
+product_id: Khóa ngoại liên kết đến bảng products thông qua cột product_id.
+quantity: Số lượng sản phẩm trong giỏ hàng.
+created_at: Thời điểm tạo bản ghi.
+
+
+
+Bảng category:
+
+id: Khóa chính, duy nhất, tự động tăng.
+name: Tên của danh mục.
+
+
+
+Bảng list_register_seller:
+
+id: Khóa chính, duy nhất, tự động tăng.
+user_id: Khóa ngoại liên kết đến bảng users thông qua cột user_id.
+registration_date: Thời điểm đăng ký.
+description: Mô tả đăng ký.
+status: Trạng thái đăng ký.
+
+
+
+Bảng orders:
+
+order_id: Khóa chính, duy nhất, tự động tăng.
+user_id: Khóa ngoại liên kết đến bảng users thông qua cột user_id.
+tracking_code: Mã theo dõi đơn hàng.
+order_date: Thời điểm đặt hàng.
+total_amount: Tổng số tiền đơn hàng.
+status: Trạng thái đơn hàng.
+
+
+
+
+Bảng order_items:
+
+id: Khóa chính, duy nhất, tự động tăng.
+order_id: Khóa ngoại liên kết đến bảng orders thông qua cột order_id.
+product_id: Khóa ngoại liên kết đến bảng products thông qua cột product_id.
+quantity: Số lượng sản phẩm trong đơn hàng.
+subtotal: Tổng số tiền của từng sản phẩm trong đơn hàng (ví dụ đơn hàng có 3 áo và 1 mũ,thì 3 cái áo giá 100k sẽ là 300k, 1 mũ giá 10k sẽ là 10k,sau đó mới tính tổng tiền ở bảng orders).
+
+
+Bảng products:
+
+product_id: Khóa chính, duy nhất, tự động tăng.
+seller_id: Khóa ngoại liên kết đến bảng users thông qua cột user_id.
+name: Tên sản phẩm.
+description: Mô tả sản phẩm.
+price: Giá sản phẩm.
+category_id: Khóa ngoại liên kết đến bảng category thông qua cột id.
+quantity_stock: Số lượng tồn kho.
+created_at: Thời điểm tạo sản phẩm.
+updated_at: Thời điểm cập nhật sản phẩm.
+
+
+Bảng reviews:
+
+id: Khóa chính, duy nhất, tự động tăng.
+product_id: Khóa ngoại liên kết đến bảng products thông qua cột product_id.
+user_id: Khóa ngoại liên kết đến bảng users thông qua cột user_id.
+rating: Điểm đánh giá.
+comment: Bình luận về sản phẩm.
+created_at: Thời điểm tạo đánh giá.
+
+
+Bảng users:
+user_id: Khóa chính, duy nhất, tự động tăng.
+username: Tên người dùng.
+password: Mật khẩu.
+role: Vai trò người dùng.
+created_at: Thời điểm tạo tài khoản.
+
+
+Bảng users_info:
+
+id: Khóa chính, duy nhất, tự động tăng.
+user_id: Khóa ngoại liên kết đến bảng users thông qua cột user_id.
+image_avatar: Ảnh đại diện người dùng.
+fullname: Tên đầy đủ người dùng.
+email: Địa chỉ email người dùng.
+phone: Số điện thoại.
+gender: Giới tính.
+date: Ngày sinh.
+address: Địa chỉ.
+updated_time: Thời điểm cập nhật thông tin người dùng.
+
+
+Bảng users_monney:
+id: Khóa chính, duy nhất, tự động tăng.
+user_id: Khóa ngoại liên kết đến bảng users thông qua cột user_id.
+wait_monney: Số tiền đang đợi xử lý,chờ người mua xác nhận đơn hàng sẽ được tăng vào tổng tiền.
+total_monney: Tổng số tiền người dùng.

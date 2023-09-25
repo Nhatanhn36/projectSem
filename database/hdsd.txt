@@ -1,0 +1,63 @@
+Bảng cart_items:
+
+Mục tiêu: Lưu trữ thông tin về các mục trong giỏ hàng của người dùng.
+Tác dụng: Bảng này giúp theo dõi các sản phẩm mà người dùng đã thêm vào giỏ hàng, bao gồm thông tin về số lượng, người dùng và sản phẩm liên kết. Điều này giúp quản lý giỏ hàng và quá trình thanh toán.
+
+
+
+Bảng category:
+
+Mục tiêu: Lưu trữ danh mục của các sản phẩm.
+Tác dụng: Bảng này liên kết danh mục với các sản phẩm cụ thể, 
+giúp xác định mục đích và loại sản phẩm, giúp người dùng dễ dàng tìm kiếm và duyệt sản phẩm theo danh mục.
+
+
+Bảng list_register_seller:
+
+Mục tiêu: Hiển thị danh sách đăng ký cho admin để cấp quyền người bán cho người dùng nếu họ có nhu cầu trở thành người bán.
+Tác dụng: Bảng này lưu trữ thông tin về các đăng ký của người bán trong hệ thống.
+ Thông qua bảng này, bạn có thể quản lý việc xử lý đăng ký của người bán và cập nhật trạng thái đăng ký và quyền của họ.
+
+
+
+Bảng orders:
+
+Mục tiêu: Lưu trữ thông tin về các đơn hàng.
+Tác dụng: Bảng này chứa thông tin về các đơn hàng mà người dùng đã đặt.
+ Thông qua bảng này, bạn có thể theo dõi trạng thái, số lượng và tổng giá trị của đơn hàng.
+
+
+Bảng order_items:
+Mục tiêu: Lưu trữ thông tin về các mục trong đơn hàng.
+Tác dụng: Bảng này giúp theo dõi các sản phẩm cụ thể trong mỗi đơn hàng, bao gồm thông tin về số lượng,
+ giá tiền và sản phẩm liên kết. Điều này giúp tính toán tổng giá trị của từng mục trong đơn hàng.
+
+
+Bảng products:
+Mục tiêu: Lưu trữ thông tin về các sản phẩm.
+Tác dụng: Bảng này chứa thông tin chi tiết về các sản phẩm, bao gồm tên, giá, số lượng tồn kho, mô tả và thông tin người bán.
+ Điều này giúp quản lý và hiển thị các sản phẩm trong cửa hàng.
+
+
+Bảng reviews:
+Mục tiêu: Lưu trữ đánh giá và bình luận của người dùng về sản phẩm.
+Tác dụng: Bảng này cho phép người dùng đánh giá và bình luận về các sản phẩm.
+ Điều này cung cấp thông tin phản hồi từ người dùng và giúp tăng tính minh bạch và đáng tin cậy trong cửa hàng của bạn.
+
+
+Bảng users:
+Mục tiêu: Lưu trữ thông tin về người dùng.
+Tác dụng: Bảng này chứa thông tin về tài khoản người dùng, bao gồm tên người dùng, mật khẩu và vai trò.
+ Điều này giúp quản lý và xác thực người dùng khi họ đăng nhập vào hệ thống.
+
+
+Bảng users_info:
+Mục tiêu: Lưu trữ thông tin cá nhân của người dùng.
+Tác dụng: Bảng này chứa thông tin chi tiết về người dùng, bao gồm hình ảnh đại diện, tên, địa chỉ email, số điện thoại và thông tin cá nhân khác. 
+Điều này giúp cung cấp thông tin cá nhân cho người dùng và quản trị viên.
+
+
+Bảng users_monney:
+Mục tiêu: Quản lý tài chính của người bán.
+Tác dụng: Bảng này theo dõi số tiền đang đợi xử lý và tổng số tiền của mỗi người dùng.
+ Điều này giúp theo dõi tình hình tài chính của người bán và xử lý các giao dịch liên quan đến tiền mặt.

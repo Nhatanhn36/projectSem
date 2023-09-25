@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Seller Registration Requests</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css">
+    <style>
+        /* Custom CSS for seller registration list */
+        .registration-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .registration-item {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments/header :: body}"></div>
+<div class="container">
+    <h1>Seller Registration Requests</h1>
+    <div class="registration-list">
+        <div class="btn-group mb-3">
+            <a th:href="@{/seller/list-register}" class="btn btn-secondary">
+                Tất Cả
+            </a>
+            <a th:href="@{/seller/list-register?status=PENDING}" class="btn btn-secondary">
+                Chờ Duyệt
+                <span class="badge badge-danger ml-1" th:text="${pendingCount}"></span>
+            </a>
+            <a th:href="@{/seller/list-register?status=ACCEPT}" class="btn btn-secondary">
+                Đã Duyệt
+                <span class="badge badge-danger ml-1" th:text="${acceptedCount}"></span>
+            </a>
+            <a th:href="@{/seller/list-register?status=DECLINE}" class="btn btn-secondary">
+                Từ Chối
+                <span class="badge badge-danger ml-1" th:text="${declinedCount}"></span>
+            </a>
+        </div>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Mã</th>
+                <th>User</th>
+                <th>Registration Date</th>
+                <th>Update Time</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th th:if="${loggedInUser.role == 0}">Action</th> <!-- Thêm trường Action -->
+                <th th:if="${loggedInUser.role == 2}">Action</th> <!-- Thêm trường Action -->
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="request : ${requests}" class="registration-item">
+                <td th:text="${request.id}"></td>
+                <td th:text="${request.user.username}"></td>
+                <td th:text="${request.registrationDate}"></td>
+                <td th:text="${request.update_time}"></td>
+                <td th:text="${request.description}"></td>
+                <td th:text="${request.status}"></td>
+                <td th:if="${loggedInUser.role == 0}">
+                    <form th:action="@{/seller/details/{id}(id=${request.id})}" method="GET">
+                        <button type="submit" class="btn btn-danger btn-sm">Chi Tiết</button>
+                    </form>
+                </td>
+                <td th:if="${loggedInUser.role == 2}" >
+                    <form th:action="@{/seller/details/{id}(id=${request.id})}" method="GET">
+                        <button type="submit" class="btn btn-danger btn-sm">Chi Tiết</button>
+                    </form>
+                    <hr>
+                    <form th:if="${request.status != 'DECLINE' && request.status != 'ACCEPT'}"
+                          th:action="@{/seller/accept/{id}(id=${request.id})}" method="POST" >
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn chấp nhận không?')">Chấp Nhận</button>
+                    </form>
+                    <hr>
+                    <form th:if="${request.status != 'DECLINE' && request.status != 'ACCEPT'}"
+                          th:action="@{/seller/decline/{id}(id=${request.id})}" method="POST">
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn Chắc Chắn Muốn Từ Chối Chứ?')">Từ Chối</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body></html>

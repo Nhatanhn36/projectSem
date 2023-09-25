@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Seller List</title>
+</head>
+<body>
+<h1>Seller List</h1>
+<table>
+  <thead>
+  <tr>
+    <th>User ID</th>
+    <th>Username</th>
+    <!-- Thêm các cột khác tùy theo yêu cầu -->
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="seller : ${sellers}">
+    <td th:text="${seller.userId}"></td>
+    <td th:text="${seller.username}"></td>
+    <!-- Thêm các cột khác tùy theo yêu cầu -->
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>

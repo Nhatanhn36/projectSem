@@ -1,0 +1,15 @@
+<!-- resources/templates/cart/order-confirmation.html -->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <!-- Import các thư viện và CSS cần thiết -->
+</head>
+<body>
+<h2>Order Confirmation</h2>
+<p>Thank you for your order!</p>
+<p>Order ID: <span th:text="${order.orderId}"></span></p>
+<p>Total Amount: <span th:text="${order.totalAmount}"></span></p>
+<!-- Hiển thị thông tin chi tiết đơn hàng và các trường khác tùy ý -->
+</body>
+</html>

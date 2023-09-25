@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Top Up</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #f8f8f8;
+      font-family: Arial, sans-serif;
+    }
+    .haidz {
+      margin-top: 50px;
+      text-align: center;
+      background-color: #fff;
+      padding: 20px;
+      width: 741px;
+      margin-left: 65px;
+      border-radius: 31px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #ff6600;
+    }
+    form {
+      margin-top: 20px;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    button[type="submit"] {
+      background-color: #ff6600;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button[type="submit"]:hover {
+      background-color: #ff9900;
+    }
+    /* Thêm giới hạn kích thước cho hình ảnh QR code */
+    #qrCodeImage {
+      max-width: 400px;
+      max-height: 400px;
+    }
+    .modal-content{
+      margin-left: 831px;
+      margin-top: 134px;
+      width: 25%;
+      height: 100%;
+      overflow: hidden;
+      outline: 0;
+    }
+  </style>
+</head>
+<body>
+<div th:replace="~{fragments/header :: body}"></div>
+<div class="haidz">
+  <h1>Top Up</h1>
+  <form id="topUpForm" action="javascript:void(0);" onsubmit="showQRCode()">
+    <input type="number" name="amountInput" id="amountInput" placeholder="Enter amount">
+    <button type="submit" th:attr="data-username=${loggedInUser.username}">Generate QR Code</button>
+  </form>
+</div>
+<div id="qrCodeModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeQRCodeModal()">&times;</span>
+    <img id="qrCodeImage" src="" alt="QR Code">
+  </div>
+</div>
+<script>
+  function showQRCode() {
+    const amountInput = document.getElementById("amountInput");
+    const qrCodeModal = document.getElementById("qrCodeModal");
+    const qrCodeImage = document.getElementById("qrCodeImage");
+
+    if (!amountInput.value.trim()) {
+      alert("Please enter an amount before submitting the form.");
+      return;
+    }
+    const username = document.querySelector('[data-username]').getAttribute('data-username'); // Lấy giá trị từ thuộc tính data-username
+    const amount = amountInput.value;
+    if (amount < 1000){
+      alert("Please enter amount value > 1000");
+      return;
+    }
+    const addInfo = "TOPUP%20" + amount + "%20" + username;
+
+    const imageUrl = `https://img.vietqr.io/image/mbbank-0383087656-compact2.jpg?amount=${amount}&addInfo=${addInfo}&accountName=SHOPPLAZA`;
+    qrCodeImage.src = imageUrl;
+
+    qrCodeModal.style.display = "block";
+  }
+
+  function closeQRCodeModal() {
+    const qrCodeModal = document.getElementById("qrCodeModal");
+    qrCodeModal.style.display = "none";
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Review List</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <style>
+    .review-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* 3 cột mỗi hàng, tự động điều chỉnh kích thước */
+      grid-gap: 20px; /* Khoảng cách giữa các đánh giá */
+    }
+
+    .review-card {
+      border: 1px solid #ddd;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+    }
+
+    .review-card img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+<div th:replace="~{fragments/header :: body}"></div>
+
+<div class="container">
+
+
+  <h2>Product Reviews</h2>
+  <div class="review-list">
+    <div th:if="${productReview != null}" class="review-card">
+      <div th:text="'Product: ' + ${productReview.name}"></div>
+      <div style="font-weight: bold;" th:text="'Seller: ' + ${productReview.seller.username}"></div>
+      <img class="review-image" th:src="@{'/images/' + ${productReview.images}}" alt="Product Image" width="100" height="100"/>
+    </div>
+  </div>
+
+  <h2>Users Reviews:</h2>
+
+  <div class="review-list">
+    <div th:each="review : ${reviews}" class="review-card">
+      <div th:text="'User Review: ' + ${review.user.username}"></div>
+      <div style="color: mediumvioletred;" th:text="${review.rating} + '★'"></div>
+      <div class="review-comment" th:text="'Review Comment: ' + ${review.comment}"></div>
+      <img class="review-image" th:src="@{'/images/' + ${review.imagesReview}}" alt="Product Image" width="100" height="100"/>
+      <div class="review-created-at" th:text="${review.createdAt}"></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

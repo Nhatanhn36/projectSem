@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Save Product</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+    <h3>Product Directory</h3>
+    <hr>
+
+    <p class="h4 mb-4">Save Product</p>
+    <form th:action="@{/products/save}" th:object="${product}" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="name">Product Name:</label>
+            <input type="text" th:field="*{name}" class="form-control mb-4 col-4" id="name">
+        </div>
+            <input type="hidden" th:field="*{seller.userId}" class="form-control mb-4 col-4" id="seller" th:value="${product.seller.userId}" readonly>
+        <div class="form-group">
+            <label for="category">Category:</label>
+            <select th:field="*{categoryId}" class="form-control mb-4 col-4" id="category">
+                <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+            </select>
+        </div>
+
+
+        <div class="form-group">
+            <label for="price">Price:</label>
+            <input type="text" th:field="*{price}" class="form-control mb-4 col-4" id="price">
+        </div>
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea th:field="*{description}" class="form-control mb-4 col-4" id="description"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="quantity">Quantity:</label>
+            <input type="text" th:field="*{quantityStock}" class="form-control mb-4 col-4" id="quantity">
+        </div>
+        <div class="form-group">
+            <label for="images">Images:</label>
+            <input type="file" name="image" class="form-control-file" id="images">
+        </div>
+        <input type="hidden" name="oldImages" th:value="${product.images}">
+
+        <input type="hidden" th:field="*{productId}" th:if="${product.productId != null}">
+        <button type="submit" class="btn btn-info col-2">Save</button>
+    </form>
+    <hr>
+    <a th:href="@{/products/product-list}">Back to Product List</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Product Details</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css">
+  <style>
+    /* Custom CSS for product details */
+    .product-details {
+      padding: 20px;
+    }
+
+    .product-details img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .product-details h1 {
+      margin-top: 20px;
+    }
+
+    .product-details p {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+<div th:replace="~{fragments/header :: body}"></div>
+<div class="container product-details">
+  <div class="row">
+    <div class="col-md-6">
+      <img th:src="@{'/images/' + ${product.images}}" alt="Product Image">
+    </div>
+    <div class="col-md-6">
+      <h1 th:text="${product.name}"></h1>
+      <p><strong>Price:</strong> $<span th:text="${product.price}"></span></p>
+      <p><strong>Quantity in Stock:</strong> <span th:text="${product.quantityStock}"></span></p>
+      <p><strong>Sold:</strong> <span th:text="${product.sold}"></span></p>
+      <p><strong>Description:</strong></p>
+      <p th:text="${product.description}"></p>
+      <form th:action="@{/cart/add}" method="post" >
+        <input type="hidden" name="productId" th:value="${product.productId}" />
+        <button th:if="${loggedInUser != null && product.seller.userId != loggedInUser.userId}" type="submit" class="btn btn-primary" onclick="confirm('Bạn chắc chắn muốn thêm sản phẩm này chứ?')">Add to Cart</button>
+      </form>
+      <a th:href="@{'/reviews/' + ${product.productId} + '/list'}">
+        <p>         <strong>Rating:</strong> <span style="color: mediumvioletred" th:text="${averageRating} + '★'"></span></p>
+      </a>
+    </div>
+  </div>
+</div>
+
+  <div class="col-md-6">
+    <img th:if="${product.seller.userInfo != null}" th:src="@{'/images/' + ${product.seller.userInfo.imageAvatar}}"
+         width="40" height="40" alt="Product Image">
+    <a style="color: #ea0000" th:text="'SELLER: ' +${product.seller.username}"></a>
+    <a class="username"
+       th:href="@{/messages/chat/{otherUsername}(otherUsername=${product.seller.username})}"
+       th:text="'Chat With Seller'">
+    </a>
+  </div>
+
+
+<!-- Hiển thị sản phẩm của cùng người bán -->
+<div class="container mt-4">
+  <h2>Other Products from the Same Seller</h2>
+  <div class="row">
+    <div class="col-md-3" th:each="sellerProduct, iterStat : ${sellerProducts}">
+      <div class="card" th:style="${iterStat.index >= 4 ? 'display: none;' : ''}">
+        <img th:src="@{'/images/' + ${sellerProduct.images}}" class="card-img-top" alt="Product Image">
+        <div class="card-body">
+          <h5 class="card-title" th:text="${sellerProduct.name}"></h5>
+          <p class="card-text">$<span th:text="${sellerProduct.price}"></span></p>
+          <a class="btn btn-primary" th:href="@{'/product/details/' + ${sellerProduct.productId}}">View Details</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mt-3">
+    <button id="prevButton" class="btn btn-secondary mr-2" disabled>&lt;</button>
+    <button id="nextButton" class="btn btn-secondary">&gt;</button>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var sellerProducts = document.querySelectorAll(".card");
+    var prevButton = document.getElementById("prevButton");
+    var nextButton = document.getElementById("nextButton");
+    var currentIndex = 0;
+    var visibleCount = 4;
+
+    updateButtonStates();
+
+    prevButton.addEventListener("click", function () {
+      if (currentIndex > 0) {
+        currentIndex -= visibleCount;
+        updateButtonStates();
+      }
+    });
+
+    nextButton.addEventListener("click", function () {
+      if (currentIndex + visibleCount < sellerProducts.length) {
+        currentIndex += visibleCount;
+        updateButtonStates();
+      }
+    });
+
+    function updateButtonStates() {
+      sellerProducts.forEach(function (product, index) {
+        if (index >= currentIndex && index < currentIndex + visibleCount) {
+          product.style.display = "block";
+        } else {
+          product.style.display = "none";
+        }
+      });
+
+      prevButton.disabled = currentIndex === 0;
+      nextButton.disabled = currentIndex + visibleCount >= sellerProducts.length;
+    }
+  });
+</script>
+
+
+</body>
+</html>

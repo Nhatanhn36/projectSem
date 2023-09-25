@@ -1,0 +1,46 @@
+  <!DOCTYPE html>
+  <html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8">
+    <title>Product Directory</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="product.js"></script>
+  </head>
+  <body>
+  <div th:replace="~{fragments/header :: body}"></div>
+
+  <div class="container">
+    <hr>
+    <table class="table table-bordered table-striped"  th:each="vips : ${vip}">
+      <thead class="thead-dark">
+      <tr>
+        <th>VIP Name</th>
+        <th>Description</th>
+        <th>Price</th>
+        <th>Days</th>
+        <th>Action</th>
+      </tr>
+      </thead>
+      <tbody >
+      <tr>
+        <td th:text="${vips.name}"/>
+        <td th:text="${vips.description}"/>
+        <td th:text="${vips.price}"/>
+        <td th:text="${vips.days}"/>
+        <td>
+          <div class="row">
+            <div class="col-small">
+              <form th:action="@{/vip/buy}" method="POST">
+                <input type="hidden" name="vipId" th:value="${vips.vipId}">
+                <button type="submit" class="btn btn-danger btn-sm"
+                        onclick="return confirm('Bạn chắc chắn muốn mua gói này chứ?')">Buy VIP</button>
+              </form>
+            </div>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  </body>
+  </html>

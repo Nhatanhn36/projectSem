@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css">
+  <title>User Info</title>
+
+</head>
+<body>
+<div th:replace="~{fragments/header :: body}"></div>
+
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <h2>User Details</h2>
+    </div>
+    <div class="card-body">
+     <p th:each="vipbyuser : ${vcl}" th:if="${vipbyuser.vipPackage.vipId > 0}">
+        <strong>Đang Sử Dụng Gói</strong>
+        <span style="color: red;" th:text="'[VIP' + ${vipbyuser.vipPackage.vipId}+']'"></span>
+      <strong>,Hết hạn vào :</strong>
+      <span style="color: red;" th:text="${vipbyuser.endTime}" ></span></p>
+      <p th:if="${loggedInUser.vip != null && loggedInUser.vip <= 0}">
+        <strong >Bạn chưa có VIP</strong>
+        <a href="/vip/buy" style="color: red">Mua Ngay</a>
+      </p>
+
+      <td>
+          <img th:src="@{'/images/' + ${userInfo.imageAvatar}}" alt="Product Image" width="100px" height="100px" />
+        </td>
+      <p><strong>Full Name:</strong> <span th:text="${userInfo.fullname}"></span></p>
+      <p><strong>Email:</strong> <span th:text="${userInfo.email}"></span></p>
+      <p><strong>Phone:</strong> <span th:text="${userInfo.phone}"></span></p>
+      <p><strong>Gender:</strong> <span th:text="${userInfo.gender}"></span></p>
+      <p><strong>Date of Birth:</strong> <span th:text="${userInfo.date}"></span></p>
+      <p><strong>Address:</strong> <span th:text="${userInfo.address}"></span></p>
+    </div>
+  </div>
+
+  <!-- Form để cập nhật thông tin -->
+  <div class="card mt-4">
+    <div class="card-header">
+      <h2>Update User Info</h2>
+    </div>
+    <div class="card-body">
+      <form th:action="@{/user-info/update}" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="userId" th:value="${userInfo.user.userId}">
+
+        <div class="form-group">
+          <label for="imageAvatar">Avatar:</label>
+          <input type="file" name="imageAvatar" class="form-control-file" id="imageAvatar">
+        </div>
+        <input type="hidden" name="oldImages" th:value="${userInfo.imageAvatar}">
+
+        <div class="form-group">
+          <label for="fullname">Full Name</label>
+          <input type="text" class="form-control" id="fullname" name="fullname" th:value="${userInfo.fullname}" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" class="form-control" id="email" name="email" th:value="${userInfo.email}" required>
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone</label>
+          <input type="tel" class="form-control" id="phone" name="phone" th:value="${userInfo.phone}">
+        </div>
+        <div class="form-group">
+          <label for="gender">Gender</label>
+          <select class="form-control" id="gender" name="gender">
+            <option value="Nam" th:selected="${userInfo.gender == 'Nam'}">Nam</option>
+            <option value="Nữ" th:selected="${userInfo.gender == 'Nữ'}">Nữ</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="date">Date of Birth</label>
+          <input type="date" class="form-control" id="date" name="date" th:value="${userInfo.date}">
+        </div>
+        <div class="form-group">
+          <label for="address">Address</label>
+          <textarea class="form-control" id="address" name="address" th:text="${userInfo.address}"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Update</button>
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>

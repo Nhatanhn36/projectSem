@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LOGIN</title>
+</head>
+<body>
+<form th:action="@{/users/login}" method="post" th:object="${user}">
+  <div class="form-group">
+    <label for="username">Tên đăng nhập:</label>
+    <input type="text" class="form-control" id="username" th:field="*{username}" required>
+  </div>
+  <div class="form-group">
+    <label for="password">Mật khẩu:</label>
+    <input type="password" class="form-control" id="password" th:field="*{password}" required>
+  </div>
+  <input type="hidden" name="redirectUrl" th:value="${param.redirectUrl}" />
+  <button type="submit" class="btn btn-primary">Đăng nhập</button>
+</form>
+<a class="nav-item nav-link" th:href="@{/users/register}">Register</a>
+
+<p th:if="${error}" class="text-danger" th:text="${error}"></p>
+</body>

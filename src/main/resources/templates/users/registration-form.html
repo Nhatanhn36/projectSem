@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registration</title>
+</head>
+<body>
+<h2>User Registration</h2>
+
+<form th:action="@{/users/register}" method="post" th:object="${user}">
+  <label for="username">Username:</label>
+  <input type="text" id="username" name="username" th:field="*{username}" required>
+  <br>
+  <label for="password">Password:</label>
+  <input type="password" id="password" name="password" required>
+  <br>
+  <label for="confirmPassword">Confirm Password:</label>
+  <input type="password" id="confirmPassword" name="confirmPassword" required>
+  <br>
+  <button type="submit">Register</button>
+</form>
+<a class="nav-item nav-link" th:href="@{/users/login}">Đã có tài khoản ? Login ngay</a>
+
+<!-- Display error message if user already exists -->
+<p th:if="${param.error}" style="color: red;">Username already exists. Please choose another username.</p>
+
+<!-- Display success message -->
+<p th:if="${param.success}" style="color: green;">Registration successful. You can now <a href="/login">login</a>.</p>
+</body>
+</html>

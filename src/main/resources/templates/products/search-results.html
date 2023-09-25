@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Search Results</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css">
+  <style>
+    /* Custom CSS for search results */
+    .product-card {
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 10px;
+      margin: 10px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .product-card img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .product-card h4 {
+      margin-top: 10px;
+    }
+
+    .btn-group {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+<div th:replace="~{fragments/header :: body}"></div>
+<div class="container">
+  <p th:text="'Đã tìm thấy ' + ${#lists.size(products)} + ' sản phẩm tương ứng'" ></p>
+  <div class="row">
+    <!-- Loop through the list of products -->
+    <div class="col-md-4" th:each="product : ${products}">
+      <div class="product-card">
+        <img th:src="@{'/images/' + ${product.images}}" alt="Product Image">
+        <h4 th:text="${product.name}"></h4>
+        <p><strong>Price:</strong> $<span th:text="${product.price}"></span></p>
+        <p><strong>Seller:</strong> <span th:text="${product.seller.username}"></span></p>
+
+        <div class="btn-group">
+          <a class="btn btn-primary"  th:if="${ loggedInUser != null && product.seller.userId == loggedInUser.userId }">My Product</a>
+          <a class="btn btn-primary" th:if="${ loggedInUser == null }" th:href="@{/users/login}">Add To Cart</a>
+          <form th:action="@{/cart/add}" method="post" >
+            <input type="hidden" name="productId" th:value="${product.productId}" />
+            <button th:if="${loggedInUser != null && product.seller.userId != loggedInUser.userId}" type="submit" class="btn btn-primary" onclick="confirm('Bạn chắc chắn muốn thêm sản phẩm này chứ?')">Add to Cart</button>
+          </form>
+          <a class="btn btn-secondary" th:href="@{'/products/details/' + ${product.productId}}">Xem chi tiết</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var addToCartButtons = document.querySelectorAll(".add-to-cart-btn");
+
+    addToCartButtons.forEach(function (button) {
+      button.addEventListener("click", function () {
+        var productId = button.getAttribute("data-product-id");
+        addToCart(productId);
+      });
+    });
+
+    function addToCart(productId) {
+      // Gửi yêu cầu POST để thêm sản phẩm vào giỏ hàng
+      fetch("/cart/add-to-cart/" + productId, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+      })
+              .then(function (response) {
+                if (response.ok) {
+                  // Thêm sản phẩm thành công, có thể thực hiện cập nhật giao diện hoặc hiển thị thông báo
+                  console.log("Product added to cart");
+                } else {
+                  // Xử lý lỗi thêm sản phẩm vào giỏ hàng
+                  console.error("Failed to add product to cart");
+                }
+              })
+              .catch(function (error) {
+                console.error("An error occurred", error);
+              });
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>List Order</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        /* Custom CSS for list orders */
+
+        .order-item {
+
+            border: 1px solid #ddd;
+            padding: 8px;
+            margin-bottom: 11px;
+            background-color: #f8f9fa;
+            width: 306px;
+            height: 194px;
+            box-sizing: border-box;
+            display: inline-block;
+            vertical-align: top;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+
+        }
+        .order-item .details-btn {
+            margin-top: 10px;
+            display: flex; /* Sử dụng flexbox cho nút */
+            gap: 10px; /* Khoảng cách giữa các nút */
+        }
+
+        .order-item .details-btn form {
+            display: inline; /* Hiển thị form bên cạnh nhau */
+        }
+        .order-item img {
+            object-fit: cover;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .order-item a {
+            color: #ff00db;
+        }
+
+        .order-item a.username {
+            font-weight: bold;
+            color: #cccccc;
+        }
+
+        .order-item a.chat-link {
+            color: yellow;
+        }
+
+        .order-item .order-details {
+            color: #007af6;
+        }
+
+        .order-item .order-status {
+            color: green;
+        }
+
+        .order-item .details-btn {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments/header :: body}"></div>
+
+<div class="container">
+    <hr>
+
+    <!-- Nút "Kênh Quản Lí" -->
+    <a th:if="${loggedInUser.role != 0}" th:href="@{${loggedInUser.role == 2 ? '/admin/home' : '/seller/home'}}" class="btn btn-primary btn-sm mb-3">
+        Kênh Quản Lí
+    </a>
+    <br>
+
+    <div class="btn-group mb-3">
+        <a th:href="@{/orders/list}" class="btn btn-secondary">Tất Cả</a>
+        <a th:href="@{/orders/list/PENDING}" class="btn btn-secondary">Chờ Xác Nhận</a>
+        <a th:href="@{/orders/list/SHIPPING}" class="btn btn-secondary">Đang Giao</a>
+        <a th:href="@{/orders/list/DELIVERED}" class="btn btn-secondary">Đã Giao</a>
+        <a th:href="@{/orders/list/SUCCESS}" class="btn btn-secondary">Hoàn Thành</a>
+        <a th:href="@{/orders/list/CANCEL}" class="btn btn-secondary">Đã Hủy</a>
+        <a th:href="@{/orders/list/REFUND}" class="btn btn-secondary">Trả Hàng</a>
+    </div>
+
+    <br>
+
+
+    <div th:each="order : ${orders}" class="order-item">
+        <div  th:if="${loggedInUser.userId == order.user.userId}"
+                style="background-color: #343a40; border: 1px solid black">
+            <a class="username" th:text="'#' + ${order.orderId}"></a>
+            <img th:if="${order.seller.userInfo != null}" th:src="@{'/images/' + ${order.seller.userInfo.imageAvatar}}" alt="Product Image" width="40px" height="40px"/>
+            <a class="username" th:text="${order.seller.username}"/>
+            <a class="chat-link"
+               th:href="@{/messages/chat/{otherUsername}(otherUsername=${order.seller.username})}"
+               th:text="'Chat With Seller'"></a>
+        </div>
+
+
+        <div  th:if="${loggedInUser.userId == order.seller.userId}"
+              style="background-color: #343a40; border: 1px solid black">
+            <a class="username" th:text="'#' + ${order.orderId}"></a>
+            <img th:if="${order.user.userInfo != null}"
+                 th:src="@{'/images/' + ${order.user.userInfo.imageAvatar}}" alt="Product Image" width="40px" height="40px"/>
+            <a class="username" th:text="${order.user.username}"/>
+            <a class="chat-link"
+               th:href="@{/messages/chat/{otherUsername}(otherUsername=${order.user.username})}"
+               th:text="'Chat With User'"></a>
+        </div>
+
+
+
+
+        <div>
+            Order Date: <a style="color: #7200ff" th:text="${order.date}"></a>
+        </div>
+        <div >
+            Tracking Code:
+            <span class="order-details" th:text="${order.code}"></span>
+        </div>
+        <div >
+            Status: <span class="order-status" style="font-weight: bold" th:text="${order.status}"></span>
+        </div>
+        <div >
+            Total Amount: <span style="font-weight: bold;color: red" th:text="${order.totalAmount}"></span>
+        </div>
+
+        <div class="details-btn">
+            <form th:action="@{/orders/details/{id}(id=${order.orderId})}" method="GET">
+                <button type="submit" class="btn btn-danger btn-sm">Details</button>
+            </form>
+
+
+                <form th:if="${loggedInUser.role == 1 && order.seller.userId == loggedInUser.userId
+                 && order.status != 'CANCEL'
+                   && order.status != 'DELIVERED'
+                    && order.status != 'SUCCESS'
+               && order.status != 'REFUND'
+                    }"
+                      th:action="@{/orders/updateStatus/{orderId}/{currentStatus}(orderId=${order.orderId},
+                       currentStatus=${order.status})}"
+                      method="POST">
+                    <button type="submit" class="btn btn-primary btn-sm"
+                            onclick="return confirm('Bạn có chắc muốn xác nhận')">Confirm</button>
+                </form>
+
+
+
+            <form th:if="${loggedInUser.role == 1 && order.seller.userId == loggedInUser.userId
+            && order.status == 'PENDING'}"
+                  th:action="@{/orders/updateStatus/{orderId}/{newStatus}(orderId=${order.orderId},
+                  newStatus='SUCCESS')}"
+                  method="POST">
+                <button type="submit" class="btn btn-danger btn-sm"
+                        onclick="return confirm('Bạn có chắc muốn hủy đơn hàng này?')">Cancel</button>
+            </form>
+
+
+            <form th:if="${loggedInUser.role == 0 && order.user.userId == loggedInUser.userId
+            && order.status == 'DELIVERED'}"
+                  th:action="@{/orders/updateStatus/{orderId}/{newStatus}(orderId=${order.orderId},
+                  newStatus='DELIVERED')}"
+                  method="POST">
+                <button type="submit" class="btn btn-danger btn-sm"
+                        onclick="return confirm('Bạn có chắc chắn muốn hoàn thành đơn hàng này?')">Succes</button>
+            </form>
+
+
+            <form th:if="${loggedInUser.role == 0 && order.user.userId == loggedInUser.userId
+            && order.status == 'DELIVERED'}"
+            th:action="@{/orders/updateStatus/{orderId}/{newStatus}(orderId=${order.orderId},
+                  newStatus='CANCEL')}"
+                  method="POST"><button type="submit" class="btn btn-danger btn-sm"
+                        onclick="return confirm('Bạn có chắc chắn muốn trả hàng?')">Refund</button>
+            </form>
+
+            <form th:if="${loggedInUser.role == 0 && order.user.userId == loggedInUser.userId
+    && order.status == 'SUCCESS'}"
+                  th:action="@{/reviews/create/{orderId}(orderId=${order.orderId})}" method="GET">
+                <button type="submit" class="btn btn-danger btn-sm">Review</button>
+            </form>
+
+
+        </div>
+
+
+    </div>
+
+    <div style="clear: both;"></div>
+
+    <hr>
+</div>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Create Review</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <style>
+    /* Thêm CSS tùy chỉnh cho biểu tượng ngôi sao */
+    .rating {
+      display: flex;
+      flex-direction: row-reverse; /* Hiển thị ngôi sao từ phải sang trái */
+      justify-content: space-between;
+    }
+
+    .rating input {
+      display: none; /* Ẩn input số sao mặc định */
+    }
+
+    .rating label {
+      cursor: pointer;
+      font-size: 24px;
+    }
+
+    .rating label::before {
+      content: "\2605"; /* Biểu tượng ngôi sao */
+      color: #ccc; /* Màu mặc định cho ngôi sao trống */
+    }
+
+    .rating input:checked ~ label::before {
+      color: yellow; /* Màu khi người dùng chọn */
+    }
+  </style>
+</head>
+<body>
+<div th:replace="~{fragments/header :: body}"></div>
+
+<div class="container">
+  <h2>Create Review</h2>
+  <form th:action="@{/reviews/create/{orderId}(orderId=${order.orderId})}"
+        th:object="${review}" method="post" enctype="multipart/form-data">
+
+    <div class="form-group">
+      <label for="raiting" >Rating:</label>
+      <div class="rating" id="raiting">
+        <input type="radio" id="star5" name="rating" value="5" required>
+        <label for="star5"></label>
+        <input type="radio" id="star4" name="rating" value="4" required>
+        <label for="star4"></label>
+        <input type="radio" id="star3" name="rating" value="3" required>
+        <label for="star3"></label>
+        <input type="radio" id="star2" name="rating" value="2" required>
+        <label for="star2"></label>
+        <input type="radio" id="star1" name="rating" value="1" required>
+        <label for="star1"></label>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="comment">Comment:</label>
+      <textarea class="form-control" id="comment" name="comment" rows="4" required></textarea>
+    </div>
+    <div class="form-group">
+      <label for="imageReview">Image Review</label>
+      <input type="file" class="form-control-file" id="imageReview" name="imageReview" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit Review</button>
+  </form>
+</div>
+</body>
+</html>

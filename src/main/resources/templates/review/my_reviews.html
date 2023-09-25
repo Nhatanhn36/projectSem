@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>My Reviews</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css">
+  <style>
+    /* Tùy chỉnh CSS cho danh sách đánh giá */
+    .container {
+      padding-top: 20px;
+    }
+
+    .user-header {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .review-card {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .review-header {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+<div th:replace="~{fragments/header :: body}"></div>
+
+<div class="container">
+  <h2>My Reviews</h2>
+  <div class="user-header" th:text="'All đánh giá của :' + ${userReviews[0].user.username}"></div>
+
+  <div th:each="review : ${userReviews}" class="review-card">
+    <div style="font-weight: bold;color: #ff00db" th:text="'#' + ${review.order.orderId}"></div>
+    <div style="font-weight: bold;" th:text="'Seller: ' + ${review.order.seller.username}"></div>
+    <div class="review-header">Product: <span th:text="${review.product.name}"></span></div>
+    <img class="review-image" th:src="@{'/images/' + ${review.product.images}}" alt="Product Image" width="100" height="100"/>
+    <div>Rating: <span th:text="${review.rating}"></span></div>
+    <div>Comment: <span th:text="${review.comment}"></span></div>
+    <div>Created At: <span th:text="${review.createdAt}"></span></div>
+  </div>
+</div>
+
+</body>
+</html>

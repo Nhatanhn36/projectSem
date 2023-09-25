@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Account Information</title>
+</head>
+<body>
+<h1>Account Information</h1>
+<table>
+  <tr>
+    <td>User ID:</td>
+    <td th:text="${user.userId}"></td>
+  </tr>
+  <tr>
+    <td>Username:</td>
+    <td th:text="${user.username}"></td>
+  </tr>
+  <!-- Thêm các thông tin khác tùy theo yêu cầu -->
+</table>
+</body>
+</html>

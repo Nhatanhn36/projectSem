@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Buy VIP</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css">
+  <style>
+    .vip-package {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+    }
+    .vip-name {
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .vip-price {
+      font-size: 18px;
+    }
+    .buy-button {
+      margin-top: 10px;
+    }
+    .insufficient-funds {
+      color: red;
+      font-weight: bold;
+    }
+    .top-up-button {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+<div th:replace="~{fragments/header :: body}"></div>
+<div class="container">
+  <h1>Buy VIP</h1>
+  <form th:each="vipPackage : ${vip}" th:action="@{/vip/buy}" method="post">
+    <div class="vip-package">
+      <div class="vip-name" th:text="${vipPackage.name} + '/' + ${vipPackage.days} + ' Days'" ></div>
+      <div class="vip-price" style="color: goldenrod;text-shadow: 1px 0 black"
+           th:text="${vipPackage.price} + ' Coins'"></div>
+      <a th:if="${loggedInUser.coint >= vipPackage.price}"  style="color: green" th:text="'Availiable'"></a>
+
+      <button th:if="${loggedInUser.coint >= vipPackage.price}"
+              type="submit" name="vipPackageId"
+              th:value="${vipPackage.vipId}"
+              class="btn btn-primary buy-button"
+              onclick="return confirm('Bạn chắc chắn muốn mua gói này chứ?')">Buy</button>
+
+
+      <a th:if="${loggedInUser.coint < vipPackage.price}"
+         style="color: red"
+         th:text="'Need Extra '+${vipPackage.price - loggedInUser.coint} +' Coint'">
+      </a>
+
+
+      <a th:if="${loggedInUser.coint < vipPackage.price}"
+         th:href="@{/users/topup}" class="btn btn-primary buy-button">Top Up
+      </a>
+    </div>
+    <div class="description-from-type-label" th:text="${vipPackage.description} + ',đồng thời giảm '+${vipPackage.percentOff}+'% chiết khấu của người bán cho Nhà Phân Phối'"></div>
+    <hr style="color: #007bff;border: 2px solid #00adec" >
+    <br>
+    <br>
+  </form>
+</div>
+</body>
+</html>

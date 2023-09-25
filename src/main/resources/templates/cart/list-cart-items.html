@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cart Items</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div th:replace="~{fragments/header :: body}"></div>
+<div class="container">
+    <h1>Cart Items</h1>
+    <p th:if="${cartItems.size() <= 0}" class="text-danger" >Bạn không có sản phẩm trong Giỏ Hàng</p>
+    <form th:if="${cartItems.size() <= 0}"
+          class="btn btn-primary" th:action="@{/products/search}" method="get">
+        <input type="hidden"  class="btn btn-primary" name="query" placeholder="Search" th:value="${query}" />
+        <button  class="btn btn-primary" type="submit">Mua Sắm Ngay</button>
+    </form>
+    <p th:if="${error}" class="text-danger" th:text="${error}"></p>
+    <form th:action="@{/cart/checkout}" method="GET">
+    <table class="table">
+            <tbody th:each="seller : ${sellers}" class="seller-info">
+            <tr>
+                <th colspan="7" class="store-name" th:text="${seller.username}"></th>
+            </tr>
+            <tr th:each="cartItem : ${cartItems}" th:if="${ cartItem != null && cartItem.product.seller.userId == seller.userId}">
+                <td>
+                    <input type="checkbox" th:id="'select' + ${cartItemStat.index}" name="selectedItems" th:value="${cartItem.id}" />
+                </td>
+
+
+
+                <td>
+                    <img th:src="@{'/images/' + ${cartItem.product.images}}" alt="Product Image" width="100px" height="100px" />
+                </td>
+
+
+                <td th:text="${cartItem.product.name}"></td>
+                <td>
+                    <div class="input-group">
+                            <span class="input-group-prepend">
+                                <button type="button" class="btn btn-outline-secondary" th:attr="data-cartitemid=${cartItem.id}" onclick="decreaseQuantity(this)">-</button>
+                            </span>
+
+
+                        <input type="number" class="form-control" th:id="'quantity'+ ${cartItem.id}" name="quantities"
+                               th:value="${cartItem.quantity}" th:min = 0 th:max="${cartItem.product.quantityStock}"
+                               onchange="updateSubtotal(this)">
+
+
+                        <input type="hidden" th:id="'quantity'+ ${cartItem.id}" name="quantities"
+                               th:value="${cartItem.quantity}" th:min = 0 th:max="${cartItem.product.quantityStock}"
+                               onchange="updateSubtotal(this)">
+
+
+                        <span class="input-group-append">
+                                <button type="button" class="btn btn-outline-secondary" th:attr="data-cartitemid=${cartItem.id}"
+                                        onclick="increaseQuantity(this)">+</button>
+                            </span>
+                    </div>
+                </td>
+                <td th:id="'price' + ${cartItem.id}" th:text="${cartItem.product.price}" hidden></td>
+                <td th:id="'subtotal' + ${cartItem.id}" th:text="${cartItem.product.price * cartItem.quantity}"></td>
+                <td>
+                    <div class="col-small">
+                        <input type="hidden" name="cartItemIds" th:value="${cartItem.id}" />
+                        <input type="hidden" name="sellerIds" th:value="${cartItem.product.seller.userId}" />
+                        <button type="button" class="btn btn-danger btn-sm" onclick="deleteCartItem(this)">Delete</button>
+                    </div>
+                </td>
+
+            </tr>
+            </tbody>
+        </table>
+        <div class="text-center mt-4">
+            <button type="submit" th:if="${cartItems.size() > 0}" class="btn btn-success">Checkout</button>
+        </div>
+    </form>
+</div>
+<script>
+    // function checkout() {
+    //     var selectedItems = document.querySelectorAll('input[name="selectedItems"]:checked');
+    //
+    //     if (selectedItems.length === 0) {
+    //         alert("Vui lòng chọn ít nhất một mục để tiến hành đặt hàng.");
+    //         return;
+    //     }
+    //
+    //     // Nếu có mục được chọn, gửi yêu cầu đến máy chủ
+    //     var xhr = new XMLHttpRequest();
+    //     xhr.open("POST", "/cart/place-order", true);
+    //     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    //
+    //     var selectedItemsValues = Array.from(selectedItems).map(item => item.value);
+    //     var params = "selectedItems=" + encodeURIComponent(selectedItemsValues.join(','));
+    //
+    //     xhr.onreadystatechange = function () {
+    //         if (xhr.readyState === 4) {
+    //             if (xhr.status === 200) {
+    //                 window.location.href = "/cart/checkout-form";
+    //             } else {
+    //                 alert("Đã xảy ra lỗi khi xử lý đặt hàng.");
+    //             }
+    //         }
+    //     };
+    //
+    //     xhr.send(params);
+    // }
+
+    function deleteCartItem(button) {
+        var cartItemId = button.parentNode.querySelector('[name="cartItemIds"]').value;
+        var sellerId = button.parentNode.querySelector('[name="sellerIds"]').value;
+
+        var form = document.createElement('form');
+        form.method = 'post';
+        form.action = '/cart/delete/' + cartItemId;
+        form.style.display = 'none';
+
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'sellerId';
+        input.value = sellerId;
+
+        form.appendChild(input);
+        document.body.appendChild(form);
+
+        form.submit();
+    }
+
+    function updateSubtotal(input) {
+        var cartItemId = input.id.replace("quantity", "");
+        var price = parseInt(document.getElementById("price" + cartItemId).textContent);
+        var quantity = parseInt(input.value);
+        var subtotalElement = document.getElementById("subtotal" + cartItemId);
+        subtotalElement.textContent = price * quantity;
+
+        // Send updated quantity to server
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/cart/update-quantity", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.send("cartItemId=" + cartItemId + "&quantity=" + quantity);
+    }
+
+    function increaseQuantity(button) {
+        var cartItemId = button.getAttribute("data-cartitemid");
+        var quantityInput = document.getElementById("quantity" + cartItemId);
+        var currentValue = parseInt(quantityInput.value);
+        var maxQuantity = parseInt(quantityInput.getAttribute("max"));
+        if (currentValue < maxQuantity) {
+            quantityInput.value = currentValue + 1;
+            updateSubtotal(quantityInput);
+        }
+    }
+
+    function decreaseQuantity(button) {
+        var cartItemId = button.getAttribute("data-cartitemid");
+        var quantityInput = document.getElementById("quantity" + cartItemId);
+        var currentValue = parseInt(quantityInput.value);
+        if (currentValue > 1) {
+            quantityInput.value = currentValue - 1;
+            updateSubtotal(quantityInput);
+        }
+    }
+
+
+</script>
+</body>
+</html>
